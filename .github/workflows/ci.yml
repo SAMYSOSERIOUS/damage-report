@@ -9,8 +9,11 @@ jobs:
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - run: npm test
-      - run: pip install pydataset && python3 -I scripts/make-real-data.py
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python -m pip install pydataset
+      - run: python -I scripts/make-real-data.py
       - run: npm run bench
       - run: npm run build
       - run: npx playwright install --with-deps chromium
-      - run: npm i --no-save playwright && npm run e2e
+      - run: npm run e2e
