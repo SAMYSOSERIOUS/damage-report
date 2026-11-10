@@ -5,6 +5,8 @@ interface Vulnerable {
   a: string;
   m: number[];
   n: number;
+  /** c = current symbol, p = a previous official symbol, a = an alias. */
+  k?: string;
 }
 
 const approved = new Set<string>(data.approved as string[]);
@@ -23,13 +25,13 @@ export function isGeneSymbol(s: string): boolean {
 
 /** Gene symbols that Excel would turn into this month and number (day, or two-digit year). */
 export function geneCandidates(months: number[], n: number): string[] {
-  const out = new Map<string, string>();
-  for (const m of months) {
-    for (const v of byKey.get(`${m}:${n}`) ?? []) {
-      out.set(v.s, v.s === v.a ? v.s : `${v.s} (now ${v.a})`);
-    }
+  const bySymbol = new Map<string, string[]>();
+  for (const o of geneOptions(months, n)) {
+    const list = bySymbol.get(o.old) ?? [];
+    if (!list.includes(o.current)) list.push(o.current);
+    bySymbol.set(o.old, list);
   }
-  return [...out.values()];
+  return [...bySymbol].map(([old, cur]) => (cur.length === 1 && cur[0] === old ? old : `${old} (now ${cur.filter((c) => c !== old).join(' or ')})`));
 }
 
 export interface GeneOption {
@@ -41,11 +43,15 @@ export interface GeneOption {
 
 /** Same as geneCandidates, but structured, so the fix step can pick the old or the current name. */
 export function geneOptions(months: number[], n: number): GeneOption[] {
-  const out = new Map<string, GeneOption>();
+  const out = new Map<string, GeneOption & { rank: number }>();
   for (const m of months) {
-    for (const v of byKey.get(`${m}:${n}`) ?? []) out.set(`${v.s}|${v.a}`, { old: v.s, current: v.a });
+    for (const v of byKey.get(`${m}:${n}`) ?? []) {
+      // The name itself first, then a name that was officially renamed, then mere aliases.
+      const rank = v.s === v.a ? 0 : v.k === 'p' ? 1 : 2;
+      out.set(`${v.s}|${v.a}`, { old: v.s, current: v.a, rank });
+    }
   }
-  return [...out.values()];
+  return [...out.values()].sort((x, y) => x.rank - y.rank).map(({ old, current }) => ({ old, current }));
 }
 
 export const GENE_DATA_INFO = {

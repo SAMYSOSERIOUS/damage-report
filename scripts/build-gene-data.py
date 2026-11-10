@@ -19,16 +19,19 @@ months = json.loads((root / "data" / "months.json").read_text(encoding="utf-8"))
 if "--hgnc" in sys.argv:
     import csv
     src = Path(sys.argv[sys.argv.index("--hgnc") + 1])
-    syms, apps = [], []
+    syms, apps, kinds = [], [], []
     with src.open(encoding="utf-8", newline="") as fh:
         for row in csv.DictReader(fh, delimiter="\t"):
             if row.get("status", "Approved") not in ("Approved", ""):
                 continue
             a = row["symbol"].strip()
-            for s in [a] + [x.strip('"').strip() for x in (row.get("prev_symbol", "") + "|" + row.get("alias_symbol", "")).split("|") if x.strip('"').strip()]:
+            prev = [x.strip('"').strip() for x in row.get("prev_symbol", "").split("|") if x.strip('"').strip()]
+            alias = [x.strip('"').strip() for x in row.get("alias_symbol", "").split("|") if x.strip('"').strip()]
+            for s, k in [(a, "c")] + [(x, "p") for x in prev] + [(x, "a") for x in alias]:
                 syms.append(s)
                 apps.append(a)
-    table = {"Symbol": syms, "Approved.Symbol": apps}
+                kinds.append(k)
+    table = {"Symbol": syms, "Approved.Symbol": apps, "Kind": kinds}
     via = "official HGNC complete set (hgnc_complete_set.txt)"
     note = "HGNC data is released under CC0 (https://www.genenames.org/about/license/). Attribution is requested, not required."
 else:
@@ -50,10 +53,17 @@ for t, m in months["extraAbbreviations"].items():
     tok.setdefault(t, set()).add(m)
 
 approved = sorted({str(x).strip() for x in table["Approved.Symbol"] if str(x).strip()})
-pairs = {(str(s).strip(), str(a).strip()) for s, a in zip(table["Symbol"], table["Approved.Symbol"])}
+kind_of = {}
+_rank = {"c": 0, "p": 1, "a": 2}
+for s_, a_, k_ in zip(table["Symbol"], table["Approved.Symbol"], table.get("Kind", ["a"] * len(table["Symbol"]))):
+    key = (str(s_).strip(), str(a_).strip())
+    if key not in kind_of or _rank[k_] < _rank[kind_of[key]]:
+        kind_of[key] = k_
+pairs = set(kind_of)
 rx = re.compile(r"^([A-Za-z]{3,})([1-9]\d?)$")
 vul = []
 for s, a in sorted(pairs):
+    orig = s
     m = rx.match(s)
     if not m:
         continue
@@ -63,7 +73,7 @@ for s, a in sorted(pairs):
         # aliases (Oct4, Mar1, Set1, Huh7). Match them the way people type them: in capitals.
         if s != a:
             s = s.upper()
-        vul.append({"s": s, "a": a, "m": sorted(tok[t]), "n": int(m.group(2))})
+        vul.append({"s": s, "a": a, "m": sorted(tok[t]), "n": int(m.group(2)), "k": kind_of[(orig, a)]})
 
 out = {
     "source": {

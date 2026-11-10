@@ -1,5 +1,6 @@
 import type { Detector } from './common';
 import { finding } from './common';
+import { columnUsesLuhn, luhnValid } from '../checkdigits';
 
 const SCI = /^[+-]?(\d)(?:\.(\d+))?[eE]\+?(\d{1,3})$/;
 
@@ -57,6 +58,8 @@ export const longId: Detector = {
         continue;
       }
       if (/^\d{16,19}$/.test(s)) {
+        // A value that passes the column's own check digit is a real, intact ID, even if it ends in a zero.
+        if (luhnValid(s) && columnUsesLuhn(table, col, s.length)) continue;
         const zeros = /0*$/.exec(s)![0].length;
         const need = s.length - 15;
         if (zeros < need) continue;

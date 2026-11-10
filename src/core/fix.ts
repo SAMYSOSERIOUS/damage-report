@@ -1,7 +1,7 @@
 import { colLetter } from './excel';
 import { geneOptionsForCell } from './detectors/geneDate';
 import { fixMojibake } from './detectors';
-import { luhnCheckDigit, luhnValid } from './checkdigits';
+import { columnUsesLuhn, luhnCheckDigit, luhnValid } from './checkdigits';
 import type { Cell, Confidence, DetectorId, Finding, Table, TableReport } from './types';
 import { DETECTOR_NAMES } from './types';
 
@@ -64,21 +64,6 @@ export interface FixPlan {
 
 const RANK: Record<Confidence, number> = { high: 0, medium: 1, low: 2, info: 3 };
 const EXCEL_ROW_LIMITS = [1048576, 65536];
-
-/** Does this column's intact IDs obey the Luhn check? Only values that cannot be cut (last digit not zero) count. */
-function columnUsesLuhn(table: Table, col: number, length: number): boolean {
-  let seen = 0;
-  let ok = 0;
-  for (const r of table.rows) {
-    const s = r[col].text.trim();
-    if (s.length !== length || !/^\d+$/.test(s) || s.endsWith('0')) continue;
-    // A number cell is a double: above 2^53 (9.007e15) even the last digits are unreliable, so they prove nothing.
-    if (r[col].t === 'number' && Number(s) > Number.MAX_SAFE_INTEGER) continue;
-    seen++;
-    if (luhnValid(s)) ok++;
-  }
-  return seen >= 5 && ok / seen >= 0.95;
-}
 
 /** US state -> first three ZIP digits that belong to it. Only the states where a ZIP can start with zero. */
 const ZIP3: Record<string, [number, number][]> = {
@@ -413,6 +398,11 @@ export function untouchedViolations(before: Table, after: Table, allowed: Set<st
   return bad;
 }
 
+/** The box a log row belongs to. A choice nobody made is shown as waiting, not as fixed. */
+export function boxLabel(l: LogEntry): string {
+  return l.status === 'left as is' ? 'Waiting for your choice' : BOX_NAMES[l.box];
+}
+
 export function applyFixes(table: Table, plan: FixPlan, decisions: Decisions): FixResult {
   const rows = table.rows.map((r) => r.slice());
   const log: LogEntry[] = [];
@@ -429,7 +419,8 @@ export function applyFixes(table: Table, plan: FixPlan, decisions: Decisions): F
         allowed.add(`${p.rowIndex}:${p.col}`);
         log.push({ ...base, after: chosen!, status: 'fixed', decidedBy: p.box === 'proven' ? 'automatic proof' : 'you' });
       } else {
-        log.push({ ...base, after: p.before, status: 'left as is', decidedBy: '' });
+        const hint = p.options[0] ? ` Suggested: ${p.options[0].value}. Not applied, because nobody said yes.` : '';
+        log.push({ ...base, clue: base.clue + hint, after: p.before, status: 'left as is', decidedBy: '' });
         flag(p.rowIndex, `${p.address}: possible ${DETECTOR_NAMES[p.detector].toLowerCase()}, not fixed`);
       }
     } else if (p.box === 'source') {

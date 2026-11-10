@@ -34,3 +34,20 @@ export function luhnCheckDigit(body: string): number {
 export function luhnValid(digits: string): boolean {
   return digits.length > 1 && /^\d+$/.test(digits) && luhnCheckDigit(digits.slice(0, -1)) === digits.charCodeAt(digits.length - 1) - 48;
 }
+
+
+/** Does this column's intact IDs obey the Luhn check? Only values that cannot be cut (last digit not zero) count. */
+export function columnUsesLuhn(table: { rows: { t: string; text: string }[][] }, col: number, length: number): boolean {
+  let seen = 0;
+  let ok = 0;
+  for (const r of table.rows) {
+    const s = r[col].text.trim();
+    if (s.length !== length || !/^\d+$/.test(s) || s.endsWith('0')) continue;
+    // A number cell is a double: above 2^53 (9.007e15) even the last digits are unreliable, so they prove nothing.
+    if (r[col].t === 'number' && Number(s) > Number.MAX_SAFE_INTEGER) continue;
+    seen++;
+    if (luhnValid(s)) ok++;
+  }
+  return seen >= 5 && ok / seen >= 0.95;
+}
+
