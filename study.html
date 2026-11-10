@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The study — Damage Report</title></head>
+<body><div id="nav"></div>
+<main class="wrap">
+<h1>The study: how much damage is out there?</h1>
+<p class="lead">A famous 2016 paper found gene-name errors in about 1 in 5 scientific papers with gene lists. A 2020 follow-up and a 2023 news report showed the problem had not gone away. This tool makes it cheap to measure again: run it on a pile of public files and count.</p>
+<h2>What is here today</h2>
+<div class="card"><p><b>Ready:</b> a command-line script (<code>npm run study</code>) that scans a folder of files, writes one row per file and one summary, and never uploads anything.</p>
+<p><b>Not done:</b> I could not run it on real published supplementary files, because the build machine cannot reach those sites. The script that downloads files from Zenodo is included, but it has <b>not been tested against the live site</b>. So there is <b>no headline number here yet</b>, and I will not make one up.</p></div>
+<h2>How to run it yourself</h2>
+<ol>
+<li>Install Node 20 or newer, then run <code>npm install</code> in the project folder.</li>
+<li>Put the files you want to check in a folder, for example <code>my-files</code>. Or try <code>npm run study -- --fetch "gene expression" --limit 50 my-files</code> to download public files from Zenodo.</li>
+<li>Run <code>npm run study -- my-files</code>.</li>
+<li>Read <code>study-output/summary.md</code> and <code>study-output/files.csv</code>.</li>
+</ol>
+<h2>How to read the result honestly</h2>
+<ul><li>Count only <b>very likely</b> findings as errors. “Probably” and “worth a look” are leads, not proof.</li>
+<li>A file with a flagged gene is not proof the paper’s conclusions are wrong. It shows a cell was changed.</li>
+<li>Report how many files could not be read, so nobody thinks missing files meant clean files.</li></ul>
+</main><div id="foot"></div>
+<script type="module" src="./src/pages/static.ts"></script></body></html>

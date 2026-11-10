@@ -1,0 +1,36 @@
+Five Excel files to drop on Damage Report. What you should see:
+
+1_gene_list_damaged.xlsx
+   5 flagged: 2-Sep, 15-Sep, 1-Mar, 4-Oct (very likely, shows the gene it was)
+   and 44076 (probably - a date that became a plain number).
+   Everything else in the Gene column is fine.
+
+2_customers_damaged.xlsx
+   Order IDs ending in a zero (cut to 15 digits), garbled names like "JosÃ© GarcÃ­a",
+   ZIP codes that lost a leading zero, and 3 dates written month/day among day/month ones.
+
+3_lab_numbers_as_text_two_sheets.xlsx
+   Two sheets. Measurements has numbers stored as text (" 412 ", "1,250", "3100").
+   The Notes sheet is clean. Use the sheet buttons to switch.
+
+4_clean_file.xlsx
+   Should show "No sign of damage". ZIP codes kept as text on purpose - that is correct.
+
+5_everything_wrong.xlsx
+   Several kinds at once: a gene turned into a date (2-Sep), Jan-41 (TAMM41),
+   cut IDs, lost zeros and a mixed date.
+
+These files were made by a program (openpyxl), not saved by real Excel.
+
+Note: when EVERY value in a column lost its leading zero, there is nothing left to compare against, so no tool can tell. File 5 therefore mixes in some 5-digit postcodes.
+
+---- Files 6 to 11: for trying the "Fix it" step ----
+6_barcodes_lost_zeros.xlsx   Barcode column with lost leading zeros. The barcode check digit PROVES the repair (green box).
+                             Valid shorter UPC codes are offered as a choice (blue box).
+7_customers_zip_and_ids.xlsx ZIP codes with lost zeros. The State column confirms them (green). 16-digit IDs cut to 15 digits:
+                             their last digit is rebuilt from the check digit (green). Phone numbers need your yes (blue).
+8_european_numbers.xlsx      Amounts typed as text like 1.234,56. The whole column votes, then they become real numbers.
+9_genes_real_date_cells.xlsx Gene names that became real date cells. The cell's own date format narrows the answer.
+10_formulas_and_sheets.xlsx  Formulas and three sheets. Use "Download fixed Excel file": the formulas stay exactly as they are.
+11_title_rows_above_header.xlsx Title lines above the table. The real header is found anyway.
+Try both downloads for each: "Fixed Excel file" edits only the damaged cells inside your own file; "Clean copy" is a new file.

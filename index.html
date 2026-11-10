@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Damage Report — find what your spreadsheet already broke</title>
+<meta name="description" content="Drop a CSV or Excel file. Damage Report lists the cells that spreadsheet software has probably damaged, like gene names turned into dates. Runs in your browser. Nothing is uploaded.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23d92d20'/><path d='M8 17l5 5 11-12' stroke='white' stroke-width='3.5' fill='none'/></svg>">
+</head>
+<body>
+<div id="nav"></div>
+<main class="wrap">
+  <div class="hero">
+    <div class="hero-l">
+      <p class="eyebrow">Spreadsheet data audit</p>
+      <h1>Did your spreadsheet quietly <mark>break your data?</mark></h1>
+      <p class="lead">A gene called <code>SEPT2</code> turns into the date 2-Sep. A long ID loses its last digit. A ZIP code loses its zero. Drop a file in and I will list the cells that look damaged, like a careful colleague checking your notebook.</p>
+      <p class="privacy hand">→ your file never leaves your computer</p>
+    </div>
+    <div class="hero-r">
+      <button id="drop" class="drop" type="button" aria-label="Choose a CSV or Excel file">
+        <strong>Drop a CSV or Excel file here</strong>
+        <small>or click to choose one</small>
+      </button>
+      <input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xlsm" class="vh" aria-label="File to check">
+      <div class="samples"><span>Try an example:</span>
+        <button class="btn" data-sample="gene-dates.xlsx">Gene list (Excel)</button>
+        <button class="btn" data-sample="gene-dates.csv">Gene list (CSV)</button>
+        <button class="btn" data-sample="customers.csv">Customer list (CSV)</button>
+        <button class="btn" data-sample="customers.xlsx">Customer list (Excel)</button>
+        <button class="btn" data-sample="clean.csv">A clean file</button>
+      </div>
+    </div>
+  </div>
+  <div id="out" aria-live="polite"></div>
+  <h2>What it checks</h2>
+  <div class="grid2">
+    <div class="card"><b>Gene names turned into dates</b><p>SEPT2, MARCH1, DEC1 and others, in English and 7 other languages. Also when they were later saved as plain numbers.</p></div>
+    <div class="card"><b>Long IDs cut short</b><p>Excel keeps 15 digits and turns the rest into zeros.</p></div>
+    <div class="card"><b>Lost leading zeros</b><p>01234 became 1234.</p></div>
+    <div class="card"><b>Mixed date styles</b><p>Some dates read day/month, others month/day, in one column.</p></div>
+    <div class="card"><b>Garbled letters</b><p>“José” turned into “JosÃ©”.</p></div>
+    <div class="card"><b>Numbers stored as text</b><p>Spaces or separators that make a number act like a word.</p></div>
+  </div>
+  <h2>Then it fixes what it can</h2>
+  <div class="grid2">
+    <div class="card"><b>Fixed with proof</b><p>One right answer, and the reason is shown: a check digit, the stored date format, the State column, the official gene list.</p></div>
+    <div class="card"><b>Fixed by your choice</b><p>More than one possible answer. You decide, and one decision settles all identical cells.</p></div>
+    <div class="card"><b>Find it at the source</b><p>Digits that are really gone go on a recovery list. Nothing is guessed.</p></div>
+    <div class="card"><b>Your file stays safe</b><p>Download your own Excel file with only the damaged cells edited, plus a change log. Cells that were fine are never touched.</p></div>
+  </div>
+  <p>See the <a href="./scoreboard.html">scoreboard</a> for how well it works, and <a href="./how-it-works.html">how it works</a> for the pictures.</p>
+</main>
+<div id="foot"></div>
+<script type="module" src="./src/ui/app.ts"></script>
+</body>
+</html>

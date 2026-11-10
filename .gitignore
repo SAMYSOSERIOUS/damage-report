@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+testbench/real/*.csv
+testbench/real/*.xlsx
+study-input/
+
+testbench/real/*.csv
+study-output/
+testbench/workbooks/big.xlsx
+
+hgnc_complete_set.txt
+data/hgnc.table.rda

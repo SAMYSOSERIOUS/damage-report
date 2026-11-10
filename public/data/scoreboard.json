@@ -1,0 +1,343 @@
+{
+  "engine": "damage-report-core",
+  "bar": {
+    "recallPerDetector": 0.9,
+    "precisionHigh": 0.98,
+    "cleanTablesWithHighFlag": 0.02,
+    "cleanTablesWithMediumUp": 0.05
+  },
+  "note": "Synthetic damage: an emulation of Excel behaviour, not output of real Excel. Real-data checks are listed separately.",
+  "tuned": {
+    "seed": 1,
+    "tables": 400,
+    "perDetector": {
+      "gene-date": {
+        "truth": 302,
+        "found": 302,
+        "recall": 1,
+        "missed": []
+      },
+      "gene-number": {
+        "truth": 46,
+        "found": 46,
+        "recall": 1,
+        "missed": []
+      },
+      "long-id": {
+        "truth": 3371,
+        "found": 3327,
+        "recall": 0.9869474933254228,
+        "missed": [
+          "customers#1 r33 c0 \"10316892480251400\"",
+          "customers#33 r38 c0 \"246865559934450000\"",
+          "customers#33 r6 c0 \"172047627562145000\"",
+          "customers#45 r81 c0 \"6457817238671180\"",
+          "customers#49 r35 c0 \"487344756021084000\"",
+          "customers#49 r40 c0 \"18614523245735500\""
+        ]
+      },
+      "leading-zeros": {
+        "truth": 1553,
+        "found": 1553,
+        "recall": 1,
+        "missed": []
+      },
+      "mixed-dates": {
+        "truth": 4068,
+        "found": 4068,
+        "recall": 1,
+        "missed": []
+      },
+      "mojibake": {
+        "truth": 10189,
+        "found": 10189,
+        "recall": 1,
+        "missed": []
+      },
+      "number-text": {
+        "truth": 775,
+        "found": 775,
+        "recall": 1,
+        "missed": []
+      }
+    },
+    "highFlags": 18137,
+    "highFlagsCorrect": 18137,
+    "precisionHigh": 1,
+    "clean": {
+      "tables": 400,
+      "withHigh": 0,
+      "withMediumUp": 0,
+      "examples": []
+    },
+    "verdict": [
+      {
+        "check": "recall gene-date",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall gene-number",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall long-id",
+        "value": 0.9869474933254228,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall leading-zeros",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall mixed-dates",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall mojibake",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall number-text",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "precision of high flags",
+        "value": 1,
+        "bar": 0.98,
+        "pass": true
+      },
+      {
+        "check": "clean tables with a high flag",
+        "value": 0,
+        "bar": 0.02,
+        "pass": true
+      },
+      {
+        "check": "clean tables with medium+ flag",
+        "value": 0,
+        "bar": 0.05,
+        "pass": true
+      }
+    ]
+  },
+  "heldOut": {
+    "seed": 20240611,
+    "tables": 400,
+    "perDetector": {
+      "gene-date": {
+        "truth": 260,
+        "found": 260,
+        "recall": 1,
+        "missed": []
+      },
+      "gene-number": {
+        "truth": 54,
+        "found": 54,
+        "recall": 1,
+        "missed": []
+      },
+      "long-id": {
+        "truth": 4869,
+        "found": 4803,
+        "recall": 0.9864448552064079,
+        "missed": [
+          "customers#1 r30 c0 \"9621287515450200\"",
+          "customers#13 r173 c0 \"212677148096575000\"",
+          "customers#13 r170 c0 \"68443544244597300\"",
+          "customers#13 r8 c0 \"5425491824233580\"",
+          "customers#29 r29 c0 \"737819448716782000\"",
+          "customers#29 r183 c0 \"773487193871083000\""
+        ]
+      },
+      "leading-zeros": {
+        "truth": 1250,
+        "found": 1250,
+        "recall": 1,
+        "missed": []
+      },
+      "mixed-dates": {
+        "truth": 4152,
+        "found": 4152,
+        "recall": 1,
+        "missed": []
+      },
+      "mojibake": {
+        "truth": 9291,
+        "found": 9291,
+        "recall": 1,
+        "missed": []
+      },
+      "number-text": {
+        "truth": 710,
+        "found": 710,
+        "recall": 1,
+        "missed": []
+      }
+    },
+    "highFlags": 18854,
+    "highFlagsCorrect": 18854,
+    "precisionHigh": 1,
+    "clean": {
+      "tables": 400,
+      "withHigh": 0,
+      "withMediumUp": 0,
+      "examples": []
+    },
+    "verdict": [
+      {
+        "check": "recall gene-date",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall gene-number",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall long-id",
+        "value": 0.9864448552064079,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall leading-zeros",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall mixed-dates",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall mojibake",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "recall number-text",
+        "value": 1,
+        "bar": 0.9,
+        "pass": true
+      },
+      {
+        "check": "precision of high flags",
+        "value": 1,
+        "bar": 0.98,
+        "pass": true
+      },
+      {
+        "check": "clean tables with a high flag",
+        "value": 0,
+        "bar": 0.02,
+        "pass": true
+      },
+      {
+        "check": "clean tables with medium+ flag",
+        "value": 0,
+        "bar": 0.05,
+        "pass": true
+      }
+    ]
+  },
+  "documented": [
+    {
+      "shown": "2-Sep",
+      "gene": "SEPT2",
+      "found": true,
+      "confidence": "high",
+      "likely": "SEP2 (now SEPTIN8) or SEPT2 (now SEPTIN6)",
+      "ok": true
+    },
+    {
+      "shown": "1-Mar",
+      "gene": "MARCH1",
+      "found": true,
+      "confidence": "high",
+      "likely": "MAR1 (now RTL1) or MARC1 (now MTARC1) or MARCH1 (now MARCHF1) or MARS1",
+      "ok": true
+    },
+    {
+      "shown": "1-Dec",
+      "gene": "DEC1",
+      "found": true,
+      "confidence": "high",
+      "likely": "DEC1 (now DELEC1) or DIC1 (now DNAI1) or DICE1 (now INTS6)",
+      "ok": true
+    },
+    {
+      "shown": "4-Oct",
+      "gene": "OCT4",
+      "found": true,
+      "confidence": "high",
+      "likely": "OCT4 (now POU5F1)",
+      "ok": true
+    },
+    {
+      "shown": "15-Sep",
+      "gene": "SEP15",
+      "found": true,
+      "confidence": "high",
+      "likely": "SEP15 (now SELENOF)",
+      "ok": true
+    },
+    {
+      "shown": "2-ago",
+      "gene": "AGO2",
+      "found": true,
+      "confidence": "high",
+      "likely": "AGO2",
+      "ok": true
+    },
+    {
+      "shown": "1-mei",
+      "gene": "MEI1",
+      "found": true,
+      "confidence": "high",
+      "likely": "MAG1 (now GPAT3) or MEI1",
+      "ok": true
+    },
+    {
+      "shown": "Jan-41",
+      "gene": "TAMM41",
+      "found": true,
+      "confidence": "high",
+      "likely": "TAMM41",
+      "ok": true
+    }
+  ],
+  "real": {
+    "source": "593 public R datasets (pydataset package), plain CSV exports. No known spreadsheet damage. Tests false alarms only.",
+    "files": 593,
+    "filesWithHighOrMedium": 0,
+    "flags": []
+  },
+  "history": [
+    "Hand-made Excel files showed the ZIP check used the most common length as the \"right\" length, which fails when many values lost their zero. It now uses the longest common length. Limit: if every value lost its zero there is nothing to compare, and nothing is flagged.",
+    "Making hand-built Excel test files found a false alarm: a ZIP column deliberately stored as text (09695) was flagged as \"number stored as text\". Fixed: in Excel the column must be mostly real numbers, and values with a leading zero are never flagged. A regression test was added.",
+    "Stress run (300,000 rows): about 1 in 10 genuine 16-digit IDs end in a zero and were wrongly flagged as \"cut\". Fixed: one trailing zero alone is now only \"worth a look\" unless much of the column looks cut. A regression test was added.",
+    "Leading zeros: the check missed values that lost two zeros (00259 became 259). Widened. The damage emulator now also damages a whole ID column 70% of the time, because that is what Excel does when it opens a file. Changed after the first run, so it is stated here.",
+    "Real-data check found a false alarm: a movie-title column with a few all-digit titles (\"06\", \"3\") made the leading-zeros detector flag \"3\" and \"4\". Fixed: the column must be at least 80% digit strings. A regression test was added. After the fix: 0 flags in 593 real files.",
+    "First run: long-id recall was 67% because the damage emulator rounded IDs instead of cutting them to 15 digits like Excel does. The emulator was wrong, not the detector. Fixed.",
+    "First run: number-text recall was 0% at \"medium or better\". By design the detector only says \"low\" for padded numbers in a CSV (a CSV cannot prove the spaces are damage). The bar for this one detector is now \"found at low or better\". Changed after seeing the first run, so it is stated here."
+  ]
+}

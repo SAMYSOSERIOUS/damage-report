@@ -1,0 +1,56 @@
+{
+  "note": "Synthetic damage that imitates Excel; not real Excel. Bars were fixed before the first run.",
+  "bars": {
+    "cleanCellsBroken": 0,
+    "wrongProvenRateAtMost": 0.005,
+    "errorsRemainingWithPersonAtMost": 0.6
+  },
+  "runs": [
+    {
+      "seed": 1,
+      "tables": 400,
+      "choiceGroups": 352,
+      "wrongBefore": 20304,
+      "wrongAutoAfter": 8943,
+      "wrongWithPersonAfter": 3371,
+      "cleanBroken": 0,
+      "provenApplied": 11361,
+      "provenWrong": 0,
+      "choiceOffered": 5572,
+      "choiceHadTruth": 5572,
+      "boxes": {
+        "proven": 11361,
+        "choice": 5572,
+        "source": 3371,
+        "quarantine": 0
+      },
+      "dropAuto": 0.44045508274231676,
+      "dropPerson": 0.1660263987391647,
+      "provenRate": 0,
+      "pass": true
+    },
+    {
+      "seed": 20240611,
+      "tables": 400,
+      "choiceGroups": 340,
+      "wrongBefore": 20586,
+      "wrongAutoAfter": 10117,
+      "wrongWithPersonAfter": 4869,
+      "cleanBroken": 0,
+      "provenApplied": 10469,
+      "provenWrong": 0,
+      "choiceOffered": 5248,
+      "choiceHadTruth": 5248,
+      "boxes": {
+        "proven": 10469,
+        "choice": 5248,
+        "source": 4869,
+        "quarantine": 0
+      },
+      "dropAuto": 0.4914505003400369,
+      "dropPerson": 0.23651996502477413,
+      "provenRate": 0,
+      "pass": true
+    }
+  ]
+}

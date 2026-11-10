@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How it works — Damage Report</title></head>
+<body><div id="nav"></div>
+<main class="wrap">
+<h1>How it works</h1>
+<p class="lead">Short version: it reads your file, looks at each column like a careful person would, and lists cells that match a known pattern of spreadsheet damage. Everything happens inside your browser tab.</p>
+
+<h2>1. Where your file goes</h2>
+<figure class="fig"><svg viewBox="0 0 760 210" role="img" aria-label="Your file goes into the browser tab, is read, checked by seven checks, and becomes a report. A red box marks the Internet, which receives nothing." font-family="system-ui,sans-serif" font-size="14" fill="currentColor">
+<rect x="10" y="10" width="560" height="190" rx="14" fill="none" stroke="#1a7f5a" stroke-width="2.5" stroke-dasharray="6 5"/>
+<text x="24" y="34" font-weight="700" fill="#1a7f5a">Inside your browser tab</text>
+<rect x="24" y="62" width="90" height="70" rx="10" fill="none" stroke="currentColor"/><text x="69" y="92" text-anchor="middle">Your file</text><text x="69" y="112" text-anchor="middle" font-size="12" opacity=".7">CSV / xlsx</text>
+<path d="M114 97h30" stroke="currentColor" marker-end="url(#a)"/>
+<rect x="148" y="62" width="100" height="70" rx="10" fill="none" stroke="currentColor"/><text x="198" y="92" text-anchor="middle">Reader</text><text x="198" y="112" text-anchor="middle" font-size="12" opacity=".7">cells + types</text>
+<path d="M248 97h30" stroke="currentColor" marker-end="url(#a)"/>
+<rect x="282" y="62" width="130" height="70" rx="10" fill="none" stroke="currentColor"/><text x="347" y="88" text-anchor="middle">7 checks</text><text x="347" y="108" text-anchor="middle" font-size="12" opacity=".7">one column at a time</text>
+<path d="M412 97h30" stroke="currentColor" marker-end="url(#a)"/>
+<rect x="446" y="62" width="108" height="70" rx="10" fill="none" stroke="currentColor"/><text x="500" y="92" text-anchor="middle">Report</text><text x="500" y="112" text-anchor="middle" font-size="12" opacity=".7">on screen</text>
+<text x="24" y="170" font-size="12" opacity=".75">Runs in a background worker so big files do not freeze the page.</text>
+<rect x="610" y="62" width="130" height="70" rx="10" fill="none" stroke="#d92d20" stroke-width="2"/><text x="675" y="92" text-anchor="middle" fill="#d92d20">The Internet</text><text x="675" y="112" text-anchor="middle" font-size="12" fill="#d92d20">receives nothing</text>
+<path d="M554 97h50" stroke="#d92d20" stroke-dasharray="3 4"/><path d="M572 87l14 20M586 87l-14 20" stroke="#d92d20" stroke-width="2.5"/>
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" fill="currentColor"/></marker></defs></svg>
+<figcaption>The tests load the page with network recording on and check that zero requests are made while a file is analysed.</figcaption></figure>
+
+<h2>2. What damage looks like</h2>
+<p>Each row is something a person typed or exported, and what the spreadsheet stored instead.</p>
+<div class="card scroll"><table class="f"><thead><tr><th>You had</th><th>Spreadsheet stored</th><th>What happened</th></tr></thead><tbody>
+<tr><td class="mono">SEPT2</td><td class="mono">2-Sep</td><td>Read as a date</td></tr>
+<tr><td class="mono">SEPT2</td><td class="mono">44076</td><td>Date, then saved as a plain number</td></tr>
+<tr><td class="mono">TAMM41</td><td class="mono">Jan-41</td><td>Read as a month and a year</td></tr>
+<tr><td class="mono">1234567890123456</td><td class="mono">1.23457E+15</td><td>Only 15 digits are kept</td></tr>
+<tr><td class="mono">01234</td><td class="mono">1234</td><td>Leading zero dropped</td></tr>
+<tr><td class="mono">José</td><td class="mono">JosÃ©</td><td>Text read with the wrong alphabet</td></tr>
+<tr><td class="mono">13/04/2021 and 04/13/2021</td><td class="mono">in one column</td><td>Two date styles mixed</td></tr>
+</tbody></table></div>
+
+<h2>3. How it decides a gene was turned into a date</h2>
+<figure class="fig"><svg viewBox="0 0 760 330" role="img" aria-label="Decision tree: does the cell look like a date, does its column hold gene names, does a gene symbol match the month and number, then flag." font-family="system-ui,sans-serif" font-size="14" fill="currentColor">
+<defs><marker id="b" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" fill="currentColor"/></marker></defs>
+<rect x="20" y="20" width="200" height="56" rx="10" fill="none" stroke="currentColor"/><text x="120" y="45" text-anchor="middle">Does the cell look</text><text x="120" y="63" text-anchor="middle">like a date?</text>
+<path d="M220 48h40" stroke="currentColor" marker-end="url(#b)"/><text x="228" y="40" font-size="12">yes</text>
+<path d="M120 76v40" stroke="currentColor" marker-end="url(#b)"/><text x="130" y="100" font-size="12">no → skip</text>
+<rect x="264" y="20" width="220" height="56" rx="10" fill="none" stroke="currentColor"/><text x="374" y="45" text-anchor="middle">Is this a gene column?</text><text x="374" y="63" text-anchor="middle" font-size="12" opacity=".75">header or many gene-like names</text>
+<path d="M484 48h40" stroke="currentColor" marker-end="url(#b)"/><text x="492" y="40" font-size="12">yes</text>
+<path d="M374 76v40" stroke="currentColor" marker-end="url(#b)"/><text x="384" y="100" font-size="12">no → skip</text>
+<rect x="528" y="20" width="212" height="56" rx="10" fill="none" stroke="currentColor"/><text x="634" y="45" text-anchor="middle">Take month + number</text><text x="634" y="63" text-anchor="middle" font-size="12" opacity=".75">e.g. Sep + 2 → SEP2, SEPT2</text>
+<path d="M634 76v50" stroke="currentColor" marker-end="url(#b)"/>
+<rect x="528" y="130" width="212" height="70" rx="10" fill="none" stroke="currentColor"/><text x="634" y="156" text-anchor="middle">Does a real gene symbol</text><text x="634" y="174" text-anchor="middle">fit? (8 languages)</text><text x="634" y="192" text-anchor="middle" font-size="12" opacity=".75">approved gene list, 2 spellings</text>
+<path d="M528 165h-60" stroke="currentColor" marker-end="url(#b)"/><text x="488" y="156" font-size="12">yes</text>
+<rect x="268" y="130" width="200" height="70" rx="10" fill="#d92d20" fill-opacity=".14" stroke="#d92d20" stroke-width="2"/><text x="368" y="160" text-anchor="middle" font-weight="700" fill="#d92d20">VERY LIKELY</text><text x="368" y="180" text-anchor="middle" font-size="12">shows the gene it probably was</text>
+<path d="M634 200v50" stroke="currentColor" marker-end="url(#b)"/><text x="644" y="228" font-size="12">no match</text>
+<rect x="528" y="254" width="212" height="56" rx="10" fill="#f79009" fill-opacity=".16" stroke="#b54708" stroke-width="2"/><text x="634" y="278" text-anchor="middle" font-weight="700" fill="#b54708">PROBABLY</text><text x="634" y="296" text-anchor="middle" font-size="12">date in a gene column</text>
+<text x="20" y="260" font-size="13" opacity=".8">If the cell is an Excel date, I read the real day, month and</text><text x="20" y="279" font-size="13" opacity=".8">year behind it. If it is plain text like "09/02/2020", I try</text><text x="20" y="298" font-size="13" opacity=".8">every way of reading it, because I cannot know the order.</text>
+</svg><figcaption>Cells already turned into plain 5-digit numbers (for example 44076) go through a similar test, with a lower confidence.</figcaption></figure>
+
+<h2>4. How sure is “sure”?</h2>
+<figure class="fig"><svg viewBox="0 0 760 210" role="img" aria-label="Four levels: very likely, probably, worth a look, note." font-family="system-ui,sans-serif" font-size="14" fill="currentColor">
+<rect x="20" y="20" width="170" height="130" rx="10" fill="#d92d20" fill-opacity=".14" stroke="#d92d20"/><text x="105" y="48" text-anchor="middle" font-weight="700" fill="#d92d20">Very likely</text><text x="105" y="74" text-anchor="middle" font-size="12">Matches a known pattern</text><text x="105" y="92" text-anchor="middle" font-size="12">AND the context fits.</text><text x="105" y="118" text-anchor="middle" font-size="12">Gene date in gene column</text>
+<rect x="205" y="20" width="170" height="130" rx="10" fill="#f79009" fill-opacity=".16" stroke="#b54708"/><text x="290" y="48" text-anchor="middle" font-weight="700" fill="#b54708">Probably</text><text x="290" y="74" text-anchor="middle" font-size="12">Pattern fits, context</text><text x="290" y="92" text-anchor="middle" font-size="12">is weaker.</text><text x="290" y="118" text-anchor="middle" font-size="12">Date in a gene column</text>
+<rect x="390" y="20" width="170" height="130" rx="10" fill="#98a2b3" fill-opacity=".2" stroke="#667085"/><text x="475" y="48" text-anchor="middle" font-weight="700">Worth a look</text><text x="475" y="74" text-anchor="middle" font-size="12">Could be innocent.</text><text x="475" y="92" text-anchor="middle" font-size="12">A human should decide.</text><text x="475" y="118" text-anchor="middle" font-size="12">Spaces in a CSV number</text>
+<rect x="575" y="20" width="165" height="130" rx="10" fill="#5b8def" fill-opacity=".16" stroke="#175cd3"/><text x="657" y="48" text-anchor="middle" font-weight="700" fill="#175cd3">Note</text><text x="657" y="74" text-anchor="middle" font-size="12">Useful to know, not</text><text x="657" y="92" text-anchor="middle" font-size="12">a damage claim.</text>
+<path d="M20 180h720" stroke="currentColor" marker-end="url(#c)"/><text x="20" y="200" font-size="12">more certain</text><text x="740" y="200" font-size="12" text-anchor="end">less certain</text>
+<defs><marker id="c" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" fill="currentColor"/></marker></defs></svg></figure>
+
+<h2>5. How I know it works</h2>
+<figure class="fig"><svg viewBox="0 0 760 170" role="img" aria-label="Four kinds of test: real documented cases, files from other programs, made-up damage, real clean files." font-family="system-ui,sans-serif" font-size="13" fill="currentColor">
+<rect x="10" y="20" width="175" height="120" rx="10" fill="none" stroke="currentColor"/><text x="97" y="46" text-anchor="middle" font-weight="700">Known real cases</text><text x="97" y="70" text-anchor="middle">AGO2, MEI1, TAMM41,</text><text x="97" y="88" text-anchor="middle">SEPT2 … from papers</text><text x="97" y="118" text-anchor="middle" opacity=".7">must all be found</text>
+<rect x="197" y="20" width="175" height="120" rx="10" fill="none" stroke="currentColor"/><text x="284" y="46" text-anchor="middle" font-weight="700">Other programs</text><text x="284" y="70" text-anchor="middle">Files written by openpyxl</text><text x="284" y="88" text-anchor="middle">and LibreOffice, not by me</text><text x="284" y="118" text-anchor="middle" opacity=".7">catches my blind spots</text>
+<rect x="384" y="20" width="175" height="120" rx="10" fill="none" stroke="currentColor"/><text x="471" y="46" text-anchor="middle" font-weight="700">Made-up damage</text><text x="471" y="70" text-anchor="middle">400 tables + 400 held</text><text x="471" y="88" text-anchor="middle">out, seeded, repeatable</text><text x="471" y="118" text-anchor="middle" opacity=".7">measures catching</text>
+<rect x="571" y="20" width="175" height="120" rx="10" fill="none" stroke="currentColor"/><text x="658" y="46" text-anchor="middle" font-weight="700">Real clean files</text><text x="658" y="70" text-anchor="middle">593 public datasets</text><text x="658" y="88" text-anchor="middle">should give no alarms</text><text x="658" y="118" text-anchor="middle" opacity=".7">measures false alarms</text></svg>
+<figcaption>Numbers are on the <a href="./scoreboard.html">scoreboard</a>.</figcaption></figure>
+
+<h2 id="limits">What this tool cannot do</h2>
+<div class="card"><ul>
+<li><b>It cannot recover lost digits.</b> A cut-off ID is gone. It only tells you which cells to re-fetch from the source.</li>
+<li><b>A plain-text CSV cannot prove damage.</b> If “09/02/2020” was once SEPT2, the file does not say so. That is why CSV findings are often “probably”.</li>
+<li><b>Old .xls files are not read.</b> Save as .xlsx or CSV first.</li>
+<li><b>The gene list is a snapshot</b> (HGNC data through the HGNChelper package, GPL-licensed). Gene names change. Rebuild it with <code>npm run genes</code>.</li>
+<li><b>The test damage is imitation.</b> No real Excel was available while building, so the made-up damage copies documented Excel behaviour. Real files will score lower.</li>
+<li><b>The Excel reader is tested on files from openpyxl and LibreOffice</b>, not on every Excel version.</li>
+<li><b>It checks 7 kinds of damage</b>, not every kind that exists (formula errors, merged cells, hidden rows are out of scope).</li>
+<li><b>Confidence is rule-based.</b> “Very likely” is a judgement from rules and tests, not a measured probability.</li></ul></div>
+</main><div id="foot"></div>
+<script type="module" src="./src/pages/static.ts"></script></body></html>
